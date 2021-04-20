@@ -1,0 +1,77 @@
+version: "3.4"
+services:
+  traefik:
+    image: traefik
+    container_name: "traefik"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    command:
+      - "--api=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=true"
+      - "--metrics.prometheus=true"
+      - "--metrics.prometheus.addEntryPointsLabels=true"
+      - "--metrics.prometheus.addServicesLabels=true"
+      - "--accesslog=true"
+      - "--accesslog.filepath=/opt/traefik/access.log"
+      - "--global.sendAnonymousUsage=false"
+      - "--entryPoints.http.address=:80"
+      - "--entryPoints.https.address=:443"
+      - "--certificatesResolvers.mytlschallenge.acme.httpChallenge=true"
+      - "--certificatesResolvers.mytlschallenge.acme.httpChallenge.entryPoint=http"
+      - "--certificatesresolvers.mytlschallenge.acme.email=clemenko@gmail.com"
+      - "--certificatesresolvers.mytlschallenge.acme.storage=/opt/traefik/acme.json"
+    labels:
+      # Dashboard
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.ieacro.com`)"
+      - "traefik.http.routers.dashboard.entrypoints=https"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls.certresolver=mytlschallenge"
+      - "traefik.http.routers.dashboard.middlewares=https-auth"
+
+      # global redirect HTTPS
+      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{any:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=http"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker"
+
+      # middleware: Redirect HTTP->HTTPS
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+
+      # sts middlewares
+      - "traefik.http.middlewares.servicestls.headers.stsincludesubdomains=false"
+      - "traefik.http.middlewares.servicestls.headers.stspreload=true"
+      - "traefik.http.middlewares.servicestls.headers.stsseconds=15552001"
+      - "traefik.http.middlewares.servicestls.headers.isdevelopment=false"
+      
+      # middleware: Basic Auth
+      - "traefik.http.middlewares.https-auth.basicauth.users=admin:$$apr1$$VkNnnQVA$$nvOkZfQiOtK9XHgm3lvCD1"
+
+      # https proto
+      - "traefik.http.middlewares.testHeader.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.middlewares.testHeader.headers.framedeny=true"
+      - "traefik.http.middlewares.testHeader.headers.sslredirect=true"
+
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/opt/traefik/:/opt/traefik/"
+
+  andyc:
+    image: gabekangas/owncast
+    container_name: "owncast"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "1935:1935"
+    labels:
+      - "traefik.http.routers.owncast.rule=Host(`stream.ieacro.com`)"
+      - "traefik.http.routers.owncast.entrypoints=https"
+      - "traefik.http.routers.owncast.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.owncast.loadbalancer.server.port=8080"
+    volumes:
+      - "/opt/owncast:/app/data"
