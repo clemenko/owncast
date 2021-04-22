@@ -7,8 +7,7 @@
 set -e
 password=Pa22word
 zone=nyc3
-size=s-2vcpu-4gb-amd
-#s-8vcpu-16gb-amd
+size=s-4vcpu-8gb-amd
 key=30:98:4f:c5:47:c2:88:28:fe:3c:23:cd:52:49:51:01
 domain=ieacro.com
 
@@ -47,7 +46,7 @@ echo "$GREEN" "ok" "$NORMAL"
 # curl -fsSL https://get.docker.com | bash
 echo -n " adding os packages"
 ssh root@$ip 'export DEBIAN_FRONTEND=noninteractive && apt update && \
-curl -fsSL https://get.docker.com | bash && #apt upgrade -y; apt autoremove -y && \
+curl -fsSL https://get.docker.com | bash && #apt upgrade -y; #apt autoremove -y && \
 cat << EOF >> /etc/sysctl.conf
 # SWAP settings
 vm.swappiness=0
