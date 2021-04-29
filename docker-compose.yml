@@ -61,12 +61,13 @@ services:
       - "/opt/traefik/:/opt/traefik/"
 
   andyc:
-    image: gabekangas/owncast
+    image: ghcr.io/owncast/owncast:nightly #gabekangas/owncast
     container_name: "owncast"
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     ports:
+      - "8080:8080"
       - "1935:1935"
     labels:
       - "traefik.http.routers.owncast.rule=Host(`stream.ieacro.com`)"
