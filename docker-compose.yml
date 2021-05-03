@@ -24,7 +24,7 @@ services:
       - "--certificatesresolvers.mytlschallenge.acme.storage=/opt/traefik/acme.json"
     labels:
       # Dashboard
-      - "traefik.http.routers.dashboard.rule=Host(`traefik.ieacro.com`)"
+      - "traefik.http.routers.dashboard.rule=Host(`ingress.ieacro.com`)"
       - "traefik.http.routers.dashboard.entrypoints=https"
       - "traefik.http.routers.dashboard.service=api@internal"
       - "traefik.http.routers.dashboard.tls.certresolver=mytlschallenge"
@@ -67,7 +67,6 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - "8080:8080"
       - "1935:1935"
     labels:
       - "traefik.http.routers.owncast.rule=Host(`stream.ieacro.com`)"
