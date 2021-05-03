@@ -26,4 +26,4 @@ Fairly simple:
 
 ## Lessons Learned
 
-No wifi is the pro tip for the month. The difference was night and day. 
+No wifi is the pro tip for the month. The difference was night and day.
