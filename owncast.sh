@@ -39,7 +39,7 @@ echo "$GREEN" "ok" "$NORMAL"
 #update DNS
 echo -n " updating dns"
 doctl compute domain records create $domain --record-type A --record-name stream --record-ttl 300 --record-data $ip > /dev/null 2>&1
-doctl compute domain records create $domain --record-type CNAME --record-name "traefik" --record-ttl 150 --record-data stream.$domain. > /dev/null 2>&1
+doctl compute domain records create $domain --record-type CNAME --record-name "ingress" --record-ttl 150 --record-data stream.$domain. > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 
 #host modifications and Docker install
