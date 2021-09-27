@@ -100,7 +100,7 @@ echo "$GREEN" "ok" "$NORMAL"
 echo -n " - deploying owncast & traefik "
 rsync -avP docker-compose.yml root@"$ip":/opt/ > /dev/null 2>&1
 rsync -avP files_owncast/* root@"$ip":/opt/owncast > /dev/null 2>&1
-ssh root@$ip 'curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod 755 /usr/local/bin/docker-compose && \
+ssh root@$ip 'curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod 755 /usr/local/bin/docker-compose && \
 cd /opt && docker-compose up -d' > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 }
