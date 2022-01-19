@@ -61,7 +61,7 @@ services:
       - "/opt/traefik/:/opt/traefik/"
 
   andyc:
-    image: ghcr.io/owncast/owncast:nightly #gabekangas/owncast
+    image: gabekangas/owncast #ghcr.io/owncast/owncast:nightly
     container_name: "owncast"
     restart: unless-stopped
     security_opt:
