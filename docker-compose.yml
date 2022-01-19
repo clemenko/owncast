@@ -60,7 +60,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "/opt/traefik/:/opt/traefik/"
 
-  andyc:
+  owncast:
     image: gabekangas/owncast #ghcr.io/owncast/owncast:nightly
     container_name: "owncast"
     restart: unless-stopped
