@@ -11,7 +11,7 @@ size=s-4vcpu-8gb-amd
 key=30:98:4f:c5:47:c2:88:28:fe:3c:23:cd:52:49:51:01
 domain=ieacro.com
 
-image=ubuntu-20-04-x64
+image=ubuntu-21-10-x64
 
 ######  NO MOAR EDITS #######
 RED=$(tput setaf 1)
@@ -46,7 +46,7 @@ echo "$GREEN" "ok" "$NORMAL"
 # curl -fsSL https://get.docker.com | bash
 echo -n " adding os packages"
 ssh root@$ip 'export DEBIAN_FRONTEND=noninteractive && apt update && \
-curl -fsSL https://get.docker.com | bash && #apt upgrade -y; #apt autoremove -y && \
+curl -fsSL https://get.docker.com | bash && apt upgrade -y; apt autoremove -y && \
 cat << EOF >> /etc/sysctl.conf
 # SWAP settings
 vm.swappiness=0
@@ -56,7 +56,7 @@ vm.overcommit_memory=1
 net.ipv4.ip_local_port_range=1024 65000
 
 # Increase max connection
-net.core.somaxconn = 10000
+net.core.somaxconn=10000
 
 # Reuse closed sockets faster
 net.ipv4.tcp_tw_reuse=1
@@ -100,11 +100,10 @@ echo "$GREEN" "ok" "$NORMAL"
 echo -n " - deploying owncast & traefik "
 rsync -avP docker-compose.yml root@"$ip":/opt/ > /dev/null 2>&1
 rsync -avP files_owncast/* root@"$ip":/opt/owncast > /dev/null 2>&1
-ssh root@$ip 'curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod 755 /usr/local/bin/docker-compose && \
+ssh root@$ip 'curl -Ls "https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod 755 /usr/local/bin/docker-compose && \
 cd /opt && docker-compose up -d' > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 }
-
 
 ############################## kill ################################
 #remove the vms
