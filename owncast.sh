@@ -43,10 +43,8 @@ doctl compute domain records create $domain --record-type CNAME --record-name "i
 echo "$GREEN" "ok" "$NORMAL"
 
 #host modifications and Docker install
-# curl -fsSL https://get.docker.com | bash
 echo -n " adding os packages"
-ssh root@$ip 'export DEBIAN_FRONTEND=noninteractive && apt update && \
-curl -fsSL https://get.docker.com | bash && apt upgrade -y; apt autoremove -y && \
+ssh root@$ip 'export DEBIAN_FRONTEND=noninteractive && apt update && curl -fsSL https://get.docker.com | bash && apt upgrade -y; apt autoremove -y && \
 cat << EOF >> /etc/sysctl.conf
 # SWAP settings
 vm.swappiness=0
@@ -100,7 +98,7 @@ echo "$GREEN" "ok" "$NORMAL"
 echo -n " - deploying owncast & traefik "
 rsync -avP docker-compose.yml root@"$ip":/opt/ > /dev/null 2>&1
 rsync -avP files_owncast/* root@"$ip":/opt/owncast > /dev/null 2>&1
-ssh root@$ip 'curl -Ls "https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod 755 /usr/local/bin/docker-compose && \
+ssh root@$ip 'curl -Ls "https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod 755 /usr/local/bin/docker-compose && \
 cd /opt && docker-compose up -d' > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 }
